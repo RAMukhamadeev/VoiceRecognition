@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready
+        (
+            function()
+            {
+                recognition = new webkitSpeechRecognition();
+                recognition.lang = "en-GB";
+                final_transcript = '';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.onresult = function(event)
+                {
+
+                    console.log(event);
+                    console.log(event.results[0][0].transcript);
+                    var interim_transcript = '';
+                    var lastTranscript = '';
+                    for (var i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            final_transcript += event.results[i][0].transcript + " (" + event.results[i][0].confidence + ")";
+                            lastTranscript = event.results[i][0].transcript + " (" + event.results[i][0].confidence + ")";
+                        } else {
+                            interim_transcript += event.results[i][0].transcript;
+                        }
+                    }
+                //    $('#capturedText').text(final_transcript);
+                    if (lastTranscript != "")
+                    {
+                        $('#capturedText').html(  $('#capturedText').html() +  lastTranscript + '<br/>' );
+                    }
+                    if (interim_transcript != "")
+                        $('#interText').text("listening...");
+                    else
+                        $('#interText').text("...");
+                }
+                recognition.start();
+            }
+        );
+
+    </script>
+
+    <title>test page</title>
+</head>
+
+<body>
+
+ <div class="navbar navbar-inverse navbar-fixed-top topLine" role="navigation">
+    <div class="container">
+        <div class="navbar-header" style = "width: 100%">
+            <a class="navbar-brand linkToMainPage" href="home.html">Voice Recognition</a>
+        </div>
+    </div>
+</div>
+
+<div class="container content" style="width: 100%">
+    <div class="row" id="someDiv">
+        <form class="navbar-form" style="text-align: center;">
+            <div class="form-group">
+                <div id="capturedText">
+
+                </div>
+                <br/>
+                <p id="interText">
+                    Говорите...
+                </p>
+            </div>
+        </form>
+    </div>
+    <hr/>
+</div>
+
+<footer style="margin-left: 30px">
+    <p>&copy; The English Patient 2014</p>
+</footer>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</body>
+</html>
