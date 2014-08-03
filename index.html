@@ -1,94 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <title>Improve your pronunciation!</title>
 
+    <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/jumbotron.css" rel="stylesheet">
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+
     <link href="css/custom.css" rel="stylesheet">
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.min.js"></script>
 
     <script>
-        $(document).ready
-        (
-            function()
+        function startListen()
+        {
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = "en-GB";
+            final_transcript = '';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.onresult = function(event)
             {
-                recognition = new webkitSpeechRecognition();
-                recognition.lang = "en-GB";
-                final_transcript = '';
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.onresult = function(event)
-                {
-                    console.log(event);
-                    console.log(event.results[0][0].transcript);
-                    var interim_transcript = '';
-                    var lastTranscript = '';
-                    for (var i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) {
-                            final_transcript += event.results[i][0].transcript + " (" + event.results[i][0].confidence + ")";
-                            lastTranscript = event.results[i][0].transcript + " (" + event.results[i][0].confidence + ")";
-                        } else {
-                            interim_transcript += event.results[i][0].transcript;
-                        }
+                console.log(event);
+                console.log(event.results[0][0].transcript);
+                var interim_transcript = '';
+                var lastTranscript = '';
+                for (var i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        final_transcript += event.results[i][0].transcript + " (" + event.results[i][0].confidence + ")";
+                        lastTranscript = event.results[i][0].transcript + " (" + event.results[i][0].confidence + ")";
+                    } else {
+                        interim_transcript += event.results[i][0].transcript;
                     }
-                //    $('#capturedText').text(final_transcript);
-                    if (lastTranscript != "")
-                    {
-                        $('#capturedText').html(  $('#capturedText').html() +  lastTranscript + '<br/>' );
-                    }
-                    if (interim_transcript != "")
-                        $('#interText').text("listening...");
-                    else
-                        $('#interText').text("...");
                 }
-                recognition.start();
+                if (lastTranscript != "")
+                {
+                    $('#capturedText').html(  $('#capturedText').html() +  lastTranscript + '<br/>' );
+                }
+                if (interim_transcript != "")
+                    $('#interText').text("listening...");
+                else
+                    $('#interText').text("...");
             }
-        );
-
+             recognition.start();
+        }
+        function stopListen()
+        {
+            recognition.stop();
+            if ( $("#testText").text() == "yes we can" )
+            {
+                $("#result").innerHTML += "<p> Правильно! </p>";
+            }
+            else
+            {
+                $("#result").innerHTML += "<p> Не правильно! </p>";
+            }
+        }
     </script>
+  </head>
 
-    <title>test page</title>
-</head>
+  <body style="background-color: #f5f5f5;">
 
-<body>
-
- <div class="navbar navbar-inverse navbar-fixed-top topLine" role="navigation">
-    <div class="container">
-        <div class="navbar-header" style = "width: 100%">
-            <a class="navbar-brand linkToMainPage" href="home.html">Voice Recognition</a>
+    <div class="navBarStyle navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navBarLinks navbar-brand" href="index.html">Improve your pronunciation!</a>
         </div>
-    </div>
-</div>
-
-<div class="container content" style="width: 100%">
-    <div class="row" id="someDiv">
-        <form class="navbar-form" style="text-align: center;">
+        <div class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" role="form">
             <div class="form-group">
-                <div id="capturedText">
-
-                </div>
-                <br/>
-                <p id="interText">
-                    Говорите...
-                </p>
+              <input type="text" placeholder="Email" class="form-control">
             </div>
-        </form>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
     </div>
-    <hr/>
-</div>
 
-<footer style="margin-left: 30px">
-    <p>&copy; The English Patient 2014</p>
-</footer>
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h2><b>Improve your pronunciation!</b></h2>
+        <p>Этот сервис поможет вам в совершенствовании произношения слов английского языка!</p>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-</body>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row lead" style="text-align: center;">
+          <div>
+              <p> Произнесите фразу: </p>
+              <p id="testText"> <b>yes we can</b> </p>
+          </div>
+          <div id="capturedText">
+
+          </div>
+          <br/>
+          <div>
+              <p id="interText">
+
+              </p>
+          </div>
+          <div id="result">
+
+          </div>
+          <p>
+              <a id="startListen" onclick="startListen()" class="btn btn-primary btn-lg" role="button">Включить прослушивание</a>
+              <a id="stopListen" onclick="stopListen()" class="btn btn-primary btn-lg" role="button">Завершить прослушивание</a>
+          </p>
+      </div>
+
+
+
+
+      <hr>
+      <footer>
+        <p>&copy; EnglishPatient 2014</p>
+      </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+  </body>
 </html>
