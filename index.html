@@ -8,6 +8,10 @@
     <meta name="author" content="">
     <title>Improve your pronunciation!</title>
 
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -22,55 +26,78 @@
 
 
     <link href="css/custom.css" rel="stylesheet">
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.min.js"></script>
 
     <script>
         function startListen()
         {
+
+            $('#interText').text("...готов слушать...");
+
             recognition = new webkitSpeechRecognition();
             recognition.lang = "en-GB";
             final_transcript = '';
             recognition.continuous = true;
             recognition.interimResults = true;
+
             recognition.onresult = function(event)
             {
-                console.log(event);
-                console.log(event.results[0][0].transcript);
                 var interim_transcript = '';
                 var lastTranscript = '';
                 for (var i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
                         final_transcript += event.results[i][0].transcript + " (" + event.results[i][0].confidence + ")";
-                        lastTranscript = event.results[i][0].transcript + " (" + event.results[i][0].confidence + ")";
+                        lastTranscript = event.results[i][0].transcript; //+ " (" + event.results[i][0].confidence + ")";
                     } else {
                         interim_transcript += event.results[i][0].transcript;
                     }
                 }
                 if (lastTranscript != "")
                 {
-                    $('#capturedText').html(  $('#capturedText').html() +  lastTranscript + '<br/>' );
+                    $('#capturedText').text( lastTranscript );
                 }
                 if (interim_transcript != "")
-                    $('#interText').text("listening...");
+                    $('#interText').text("...обработка...");
                 else
-                    $('#interText').text("...");
+                    $('#interText').text("...готов слушать...");
             }
              recognition.start();
         }
         function stopListen()
         {
             recognition.stop();
-            if ( $("#testText").text() == "yes we can" )
+            $('#interText').text("");
+
+            if ( $('#capturedText').text() == $('#testText').text())
             {
-                $("#result").innerHTML += "<p> Правильно! </p>";
+                $('#result').removeClass("wrongAns");
+                $('#result').addClass("rightAns");
+                $('#result').text("Правильно!");
             }
             else
             {
-                $("#result").innerHTML += "<p> Не правильно! </p>";
+                $('#result').removeClass("rightAns");
+                $('#result').addClass("wrongAns");
+                $('#result').text("Не правильно!");
             }
         }
+
+        $(document).ready(
+                function()
+                {
+                    $('#butStartListen').click(
+                            function()
+                            {
+                                startListen();
+                            }
+                    );
+                    $('#butStopListen').click(
+                            function ()
+                            {
+                                stopListen();
+                            }
+                    );
+                }
+        );
     </script>
   </head>
 
@@ -115,24 +142,27 @@
       <div class="row lead" style="text-align: center;">
           <div>
               <p> Произнесите фразу: </p>
-              <p id="testText"> <b>yes we can</b> </p>
+              <b><p id="testText">yes we can</p></b>
           </div>
-          <div id="capturedText">
-
-          </div>
-          <br/>
+          <hr>
           <div>
-              <p id="interText">
-
-              </p>
+              <p> Ваш ответ: </p>
           </div>
-          <div id="result">
+          <div>
+              <b><p id="capturedText"></p></b>
+          </div>
+          <div id="result" style="margin-bottom: 20px; margin-top: 20px;">
 
           </div>
           <p>
-              <a id="startListen" onclick="startListen()" class="btn btn-primary btn-lg" role="button">Включить прослушивание</a>
-              <a id="stopListen" onclick="stopListen()" class="btn btn-primary btn-lg" role="button">Завершить прослушивание</a>
+              <input id="butStartListen" type="button" class="btn btn-primary btn-lg" value="Начать">
+              <input id="butStopListen" type="button" class="btn btn-primary btn-lg" value="Завершить">
           </p>
+          <div>
+              <p id="interText" style="font-size: 17px;">
+
+              </p>
+          </div>
       </div>
 
 
