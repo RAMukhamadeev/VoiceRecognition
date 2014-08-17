@@ -2,7 +2,7 @@
 <project version="4">
   <component name="PublishConfigData">
     <serverData>
-      <paths name="speech.englishpatient.ru">
+      <paths name="VoiceRecognition">
         <serverdata>
           <mappings>
             <mapping deploy="/var/www/speech.englishpatient.ru" local="$PROJECT_DIR$" web="/" />
