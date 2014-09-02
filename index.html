@@ -33,35 +33,46 @@
         {
 
             $('#interText').text("...готов слушать...");
+            $('#result').text("");
 
             recognition = new webkitSpeechRecognition();
-            recognition.lang = "en-GB";
-            final_transcript = '';
+            console.log(recognition);
+            recognition.lang = "en-US";
+            var finalTranscript = "";
             recognition.continuous = true;
             recognition.interimResults = true;
 
             recognition.onresult = function(event)
             {
-                var interim_transcript = '';
-                var lastTranscript = '';
+                var interimTranscript = ""
+                var lastTranscript = "";
                 for (var i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
-                        final_transcript += event.results[i][0].transcript + " (" + event.results[i][0].confidence + ")";
-                        lastTranscript = event.results[i][0].transcript; //+ " (" + event.results[i][0].confidence + ")";
+                        finalTranscript += event.results[i][0].transcript; // + " (" + event.results[i][0].confidence + ")";
+                        lastTranscript = event.results[i][0].transcript;  // + " (" + event.results[i][0].confidence + ")";
                     } else {
-                        interim_transcript += event.results[i][0].transcript;
+                        interimTranscript += event.results[i][0].transcript;
                     }
                 }
                 if (lastTranscript != "")
                 {
                     $('#capturedText').text( lastTranscript );
                 }
-                if (interim_transcript != "")
+                if (interimTranscript != "")
+                {
+                    $('#capturedText').text( interimTranscript );
                     $('#interText').text("...обработка...");
+                }
                 else
                     $('#interText').text("...готов слушать...");
             }
-             recognition.start();
+
+            recognition.onend = function(event)
+            {
+                recognition.start();
+            }
+
+            recognition.start();
         }
         function stopListen()
         {
@@ -78,7 +89,7 @@
             {
                 $('#result').removeClass("rightAns");
                 $('#result').addClass("wrongAns");
-                $('#result').text("Не правильно!");
+                $('#result').text("Неправильно!");
             }
         }
 
@@ -125,11 +136,10 @@
             </div>
             <button type="submit" class="btn btn-success">Sign in</button>
           </form>
-        </div><!--/.navbar-collapse -->
+        </div>
       </div>
     </div>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
         <h2><b>Improve your pronunciation!</b></h2>
@@ -166,19 +176,11 @@
           </div>
       </div>
 
-
-
-
       <hr>
       <footer>
         <p>&copy; EnglishPatient 2014</p>
       </footer>
-    </div> <!-- /container -->
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+    </div>
 
   </body>
 </html>
