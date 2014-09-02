@@ -29,49 +29,17 @@
     <link href="css/custom.css" rel="stylesheet">
 
     <script>
+
+        masOfPhrases = Array("table", "supervisor", "what are you doing", "sunshine", "knowledge", "mouse",
+                "laptop", "play", "house", "do you understand me", "do you recognize my voice", "interesting things");
+        currentPos = 0;
         function startListen()
         {
 
             $('#interText').text("...готов слушать...");
+            $('#testText').text(masOfPhrases[currentPos]);
+            $('#capturedText').text("");
             $('#result').text("");
-
-            recognition = new webkitSpeechRecognition();
-            console.log(recognition);
-            recognition.lang = "en-US";
-            var finalTranscript = "";
-            recognition.continuous = true;
-            recognition.interimResults = true;
-
-            recognition.onresult = function(event)
-            {
-                var interimTranscript = ""
-                var lastTranscript = "";
-                for (var i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript; // + " (" + event.results[i][0].confidence + ")";
-                        lastTranscript = event.results[i][0].transcript;  // + " (" + event.results[i][0].confidence + ")";
-                    } else {
-                        interimTranscript += event.results[i][0].transcript;
-                    }
-                }
-                if (lastTranscript != "")
-                {
-                    $('#capturedText').text( lastTranscript );
-                }
-                if (interimTranscript != "")
-                {
-                    $('#capturedText').text( interimTranscript );
-                    $('#interText').text("...обработка...");
-                }
-                else
-                    $('#interText').text("...готов слушать...");
-            }
-
-            recognition.onend = function(event)
-            {
-                recognition.start();
-            }
-
             recognition.start();
         }
         function stopListen()
@@ -84,6 +52,15 @@
                 $('#result').removeClass("wrongAns");
                 $('#result').addClass("rightAns");
                 $('#result').text("Правильно!");
+                if (currentPos < masOfPhrases.length - 1)
+                {
+                    currentPos++;
+                }
+                else
+                {
+                    alert("Поздравляем! Вы успешно прошли все тесты!");
+                    currentPos = 0;
+                }
             }
             else
             {
@@ -91,11 +68,48 @@
                 $('#result').addClass("wrongAns");
                 $('#result').text("Неправильно!");
             }
+
         }
 
         $(document).ready(
                 function()
                 {
+                    recognition = new webkitSpeechRecognition();
+                    recognition.lang = "en-US";
+                    recognition.continuous = true;
+                    recognition.interimResults = true;
+                    var finalTranscript = "";
+                    recognition.onresult = function(event)
+                    {
+                        var interimTranscript = ""
+                        var lastTranscript = "";
+                        var res = "";
+                        for (var i = event.resultIndex; i < event.results.length; ++i)
+                        {
+                            //      if (event.results[i].isFinal) {
+                            //          finalTranscript += event.results[i][0].transcript; // + " (" + event.results[i][0].confidence + ")";
+                            //          lastTranscript = event.results[i][0].transcript;  // + " (" + event.results[i][0].confidence + ")";
+                            //      } else {
+                            //         interimTranscript += event.results[i][0].transcript;
+                            //     }
+                            res += event.results[i][0].transcript;
+                        }
+
+                        //   if (lastTranscript != "")
+                        //    {
+                        //        $('#capturedText').text( lastTranscript );
+                        //    }
+
+                        if (res != "")
+                        {
+                            $('#capturedText').text( res );
+                            $('#interText').text("...обработка...");
+                        }
+                        else
+                            $('#interText').text("...готов слушать...");
+                    }
+
+                    $('#testText').text(masOfPhrases[0]);
                     $('#butStartListen').click(
                             function()
                             {
@@ -162,16 +176,14 @@
           <div>
               <b><p id="capturedText"></p></b>
           </div>
-          <div id="result" style="margin-bottom: 20px; margin-top: 20px;">
-
-          </div>
           <p>
               <input id="butStartListen" type="button" class="btn btn-primary btn-lg" value="Начать">
               <input id="butStopListen" type="button" class="btn btn-primary btn-lg" value="Завершить">
           </p>
+          <div id="result" style="margin-bottom: 20px; margin-top: 20px;">
+          </div>
           <div>
-              <p id="interText" style="font-size: 17px;">
-
+              <p id="interText" style="font-size: 17px; display: none;">
               </p>
           </div>
       </div>
