@@ -33,6 +33,22 @@
         masOfPhrases = Array("table", "supervisor", "what are you doing", "sunshine", "knowledge", "mouse",
                 "laptop", "play", "house", "do you understand me", "do you recognize my voice", "interesting things");
         currentPos = 0;
+
+        function letsSpeak()
+        {
+            var msg = new SpeechSynthesisUtterance();
+            var voices = window.speechSynthesis.getVoices();
+            msg.voice = voices[0]; // Note: some voices don't support altering params
+            msg.voiceURI = 'native';
+            msg.volume = 1; // 0 to 1
+            msg.rate = 1; // 0.1 to 10
+            msg.pitch = 1; //0 to 2
+            msg.text = $('#testText').text();
+            msg.lang = 'en-US';
+
+            speechSynthesis.speak(msg);
+        }
+
         function startListen()
         {
 
@@ -81,7 +97,7 @@
                     var finalTranscript = "";
                     recognition.onresult = function(event)
                     {
-                        var interimTranscript = ""
+                        var interimTranscript = "";
                         var lastTranscript = "";
                         var res = "";
                         for (var i = event.resultIndex; i < event.results.length; ++i)
@@ -114,6 +130,12 @@
                             function()
                             {
                                 startListen();
+                            }
+                    );
+                    $('#butStartSpeak').click(
+                            function()
+                            {
+                                letsSpeak();
                             }
                     );
                     $('#butStopListen').click(
@@ -167,7 +189,7 @@
       <div class="row lead" style="text-align: center;">
           <div>
               <p> Произнесите фразу (громко и четко): </p>
-              <b><p id="testText">yes we can</p></b>
+              <b><p id="testText"></p></b>
           </div>
           <hr>
           <div>
@@ -185,6 +207,10 @@
           <div>
               <p id="interText" style="font-size: 17px; display: none;">
               </p>
+          </div>
+          <br/>
+          <div>
+              <input id="butStartSpeak" type="button" class="btn btn-primary btn-lg" value="Проговорить">
           </div>
       </div>
 
